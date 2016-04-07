@@ -85,7 +85,7 @@ aws ec2 instances list \
 ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook \
   --key-file ~/.ssh/google_compute_engine \
   -i ./ansible_inventory \
-  ./gce-flocker-installer.yml  \
+  ./aws-flocker-installer.yml  \
   --extra-vars "flocker_agent_yml_path=${PWD}/agent.yml"
 """
 

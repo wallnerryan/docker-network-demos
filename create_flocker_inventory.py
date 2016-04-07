@@ -8,7 +8,11 @@ control-service:
   hostname: %s
   port: 4524
 dataset:
-  backend: gce
+  backend: aws
+  access_key_id: %s
+  secret_access_key: %s
+  region: %s
+  zone: %s
 """
 
 
@@ -34,7 +38,7 @@ def main(input_data):
         inventory_output.write('flocker_agents\n')
 
     with open('./agent.yml', 'w') as agent_yml:
-        agent_yml.write(_AGENT_YML % instances[0][u'ip'])
+        agent_yml.write(_AGENT_YML % (instances[0][u'ip'], "ACCESSKEY", "SECRETKEY", "REGION", "ZONE"))
 
 
 if __name__ == '__main__':
