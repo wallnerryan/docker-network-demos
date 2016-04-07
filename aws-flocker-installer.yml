@@ -1,0 +1,7 @@
+- hosts: nodes
+  user: ubuntu
+    - role: ClusterHQ.flocker
+      flocker_cluster_name: my_flocker_cluster
+      flocker_api_cert_name: plugin
+      flocker_install_docker_plugin: True
+      flocker_local_tempdir: "{{ playbook_dir }}/certs"
