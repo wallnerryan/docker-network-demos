@@ -136,9 +136,7 @@ ecf3c1b52866        overlay1            overlay
 Use Flocker
 ```
 $ export CONTROL_NODE=<control-node-ip-from-agent-yml> to use flockerctl.
-$ cp certs/plugin.crt  certs/api_user.crt
-$ cp certs/plugin.crt  certs/api_user.crt
-$:-> flockerctl --user api_user \
+$:-> flockerctl --user plugin \
   --control-service $CONTROL_NODE \
   --certs-path=${PWD}/certs \
   list-nodes

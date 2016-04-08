@@ -38,8 +38,8 @@ aws ec2 authorize-security-group-ingress --group-id ${group_id} --protocol tcp -
 # Permit VXLAN
 aws ec2 authorize-security-group-ingress --group-id ${group_id} --protocol udp --port 4789 --cidr 0.0.0.0/0
 # Permit Flocker
-aws ec2 authorize-security-group-ingress --group-id ${group_id} --protocol udp --port 4524 --cidr 0.0.0.0/0
-aws ec2 authorize-security-group-ingress --group-id ${group_id} --protocol udp --port 4523 --cidr 0.0.0.0/0
+aws ec2 authorize-security-group-ingress --group-id ${group_id} --protocol tcp --port 4524 --cidr 0.0.0.0/0
+aws ec2 authorize-security-group-ingress --group-id ${group_id} --protocol tcp --port 4523 --cidr 0.0.0.0/0
 
 ##### Docker Machine Setup
 
