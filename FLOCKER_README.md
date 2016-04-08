@@ -33,8 +33,10 @@ aws-cli/1.9.1 Python/2.7.10 Darwin/15.2.0 botocore/1.3.1
 ```
 
 ### Set Credentials
+```
 export AWS_ACCESS_KEY_ID=
 export AWS_SECRET_ACCESS_KEY=
+```
 
 ### Run the installation
 
