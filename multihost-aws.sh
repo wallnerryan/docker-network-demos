@@ -1,5 +1,4 @@
 #!/bin/bash
-
 set -e
 
 #### Set Up Environment
@@ -23,7 +22,6 @@ export AWS_DEFAULT_REGION="eu-west-1"
 export AWS_VPC_ID="vpc-69c9a10c"
 export AWS_INSTANCE_TYPE="t1.micro"
 export AWS_SSH_USER="admin"
-
 
 #### Set up Security Group in AWS
 

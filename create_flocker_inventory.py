@@ -1,3 +1,4 @@
+import os
 import json
 import sys
 
@@ -19,10 +20,10 @@ dataset:
 def main(input_data):
     instances = [
         {
-            u'ip': i[u'networkInterfaces'][0][u'accessConfigs'][0][u'natIP'],
-            u'name': i[u'name']
+            u'ip': i[u'Instances'][0][u'PublicIpAddress'],
+            u'name': i[u'Instances'][0][u'KeyName']
         }
-        for i in input_data
+        for i in input_data[u'Reservations']
     ]
 
     with open('./ansible_inventory', 'w') as inventory_output:
@@ -38,7 +39,7 @@ def main(input_data):
         inventory_output.write('flocker_agents\n')
 
     with open('./agent.yml', 'w') as agent_yml:
-        agent_yml.write(_AGENT_YML % (instances[0][u'ip'], "ACCESSKEY", "SECRETKEY", "REGION", "ZONE"))
+        agent_yml.write(_AGENT_YML % (instances[0][u'ip'], os.environ['AWS_ACCESS_KEY_ID'], os.environ['AWS_SECRET_ACCESS_KEY'], os.environ['MY_AWS_DEFAULT_REGION'], os.environ['MY_AWS_DEFAULT_REGION'] + os.environ['MY_AWS_ZONE']))
 
 
 if __name__ == '__main__':

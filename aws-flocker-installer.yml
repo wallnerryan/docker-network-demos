@@ -1,5 +1,6 @@
 - hosts: nodes
   user: ubuntu
+  roles:
     - role: ClusterHQ.flocker
       flocker_cluster_name: my_flocker_cluster
       flocker_api_cert_name: plugin
