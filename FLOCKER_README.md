@@ -149,4 +149,24 @@ ce9c0ec5   172.20.0.108
 4b215a26   172.20.0.17
 ```
 
+### Cleanup
+
+1. Delete any volumes from Flocker
+```
+flockerctl --user api_user \
+  --control-service $CONTROL_NODE \
+  --certs-path=${PWD}/certs \
+  destroy -d <dataset-id-1>
+```
+
+2. Delete Instances
+
+Remove from docker-machine (will also remove VMs)
+```
+$ docker-machine rm mha-consul mha-demo0 mha-demo1 mha-demo2
+About to remove mha-consul, mha-demo0, mha-demo1, mha-demo2
+Are you sure? (y/n): y
+```
+
+3. Remove security group
 
