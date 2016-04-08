@@ -147,6 +147,72 @@ ce9c0ec5   172.20.0.108
 4b215a26   172.20.0.17
 ```
 
+### Swarm is also setup.
+
+```
+docker-machine ls
+NAME         ACTIVE   DRIVER       STATE     URL                         SWARM   DOCKER    ERRORS
+mha-consul   *        amazonec2    Running   tcp://52.23.233.138:2376            v1.10.3
+mha-demo0    -        amazonec2    Running   tcp://52.201.226.200:2376           v1.10.3
+mha-demo1    -        amazonec2    Running   tcp://54.164.92.50:2376             v1.10.3
+mha-demo2    -        amazonec2    Running   tcp://52.87.183.133:2376            v1.10.3
+```
+
+Consul node runs your Swarm Manager at Port 3376
+
+```
+$ eval $(docker-machine env mha-consul)
+$ docker -H tcp://52.23.233.138:3376 info
+Containers: 7
+ Running: 5
+ Paused: 0
+ Stopped: 2
+Images: 4
+Server Version: swarm/1.1.3
+Role: replica
+Primary: 52.201.226.200:3376
+Strategy: spread
+Filters: health, port, dependency, affinity, constraint
+Nodes: 3
+ mha-demo0: 52.201.226.200:2376
+  └ Status: Healthy
+  └ Containers: 4
+  └ Reserved CPUs: 0 / 2
+  └ Reserved Memory: 0 B / 7.67 GiB
+  └ Labels: executiondriver=native-0.2, kernelversion=3.13.0-74-generic, operatingsystem=Ubuntu 14.04.3 LTS, provider=amazonec2, storagedriver=aufs
+  └ Error: (none)
+  └ UpdatedAt: 2016-04-08T20:54:19Z
+ mha-demo1: 54.164.92.50:2376
+  └ Status: Healthy
+  └ Containers: 1
+  └ Reserved CPUs: 0 / 2
+  └ Reserved Memory: 0 B / 7.67 GiB
+  └ Labels: executiondriver=native-0.2, kernelversion=3.13.0-74-generic, operatingsystem=Ubuntu 14.04.3 LTS, provider=amazonec2, storagedriver=aufs
+  └ Error: (none)
+  └ UpdatedAt: 2016-04-08T20:54:22Z
+ mha-demo2: 52.87.183.133:2376
+  └ Status: Healthy
+  └ Containers: 2
+  └ Reserved CPUs: 0 / 2
+  └ Reserved Memory: 0 B / 7.67 GiB
+  └ Labels: executiondriver=native-0.2, kernelversion=3.13.0-74-generic, operatingsystem=Ubuntu 14.04.3 LTS, provider=amazonec2, storagedriver=aufs
+  └ Error: (none)
+  └ UpdatedAt: 2016-04-08T20:54:08Z
+Plugins:
+ Volume:
+ Network:
+Kernel Version: 3.13.0-74-generic
+Operating System: linux
+Architecture: amd64
+CPUs: 6
+Total Memory: 23.01 GiB
+Name: d2a56d6d556f
+```
+
+## Use swarm to create overlay, flocker volume and container with that volume
+
+//TODO
+
 ### Cleanup
 
 1) Delete any volumes from Flocker
