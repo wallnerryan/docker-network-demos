@@ -20,7 +20,6 @@ export AWS_SSH_KEYPATH="/Users/wallnerryan/.ssh/id_rsa"
 ```
 pip install ansible
 pip install https://clusterhq-archive.s3.amazonaws.com/python/Flocker-1.11.0-py2-none-any.whl
-ansible-galaxy install marvinpinto.docker -p ./roles
 ansible-galaxy install ClusterHQ.flocker -p ./roles
 ```
 
