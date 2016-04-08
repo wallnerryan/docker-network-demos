@@ -4,16 +4,16 @@ set -e
 
 #### Set Up Environment
 
-if [ -z $AWS_ACCESS_KEY_ID]; then
+if [ -z $AWS_ACCESS_KEY_ID ]; then
     echo "Please supply your AWS_ACCESS_KEY_ID"
     exit 1
 fi
-if [ -z $AWS_SECRET_ACCESS_KEY]; then
+if [ -z $AWS_SECRET_ACCESS_KEY ]; then
     echo "Please supply your AWS_ACCESS_KEY_ID"
     exit 1
 fi
 
-group_name="docker-networking"
+group_name=${MY_SEC_GROUP_NAME:=}"docker-networking"
 my_ip="$(wget -q -O- http://icanhazip.com)"
 # Get the AMI for your region from this list: https://wiki.debian.org/Cloud/AmazonEC2Image/Jessie
 # Paravirtual only - HVM AMI's and Docker Machine don't seem to be working well together
@@ -71,6 +71,8 @@ docker-machine create \
     --engine-opt="cluster-store=consul://$(docker-machine ip mha-consul):8500" \
     --engine-opt="cluster-advertise=eth0:0" \
     mha-demo2
+
+echo "Done!"
 
 # use AWS CLI to pass to create_flocker_inventory.py
 """

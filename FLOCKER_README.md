@@ -5,11 +5,12 @@
 Install Docker Machine
 
 ```
-export MY_AWS_AMI="ami-971a65e0"
-export MY_AWS_DEFAULT_REGION="eu-west-1"
-export MY_AWS_VPC_ID="vpc-69c9a10c"
-export MY_AWS_INSTANCE_TYPE="t1.micro"
-export MY_AWS_SSH_USER="admin"
+export MY_AWS_AMI="ami-fce3c696"
+export MY_AWS_DEFAULT_REGION=“us-east-1”
+export MY_AWS_VPC_ID="vpc-5d1c3539"
+export MY_AWS_INSTANCE_TYPE="m3.large"
+export MY_AWS_SSH_USER=“ubuntu”
+export MY_SEC_GROUP_NAME=“test-sec-group”
 ```
 
 #### BEFORE YOU USE THE SCRIPT ####
