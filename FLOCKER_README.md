@@ -110,12 +110,26 @@ mha-demo2    -        amazonec2    Running   tcp://54.209.77.52:2376            
 
 Run the Flocker Docker Plugin on each "demo" node runing our Flocker agents.
 
-> Since we used a Ubuntu 14.04 image, we us `service` instead of `systemctl`
+> Since we used a Ubuntu 14.04 image, we us `service` instead of `systemctl`, also, we're working on automating this. [see here](https://github.com/ClusterHQ/ansible-role-flocker/issues/2)
 
 ```
-ssh ubuntu@54.86.142.130 sudo service flocker-docker-plugin start
-ssh ubuntu@52.91.14.21 sudo service flocker-docker-plugin start
-ssh ubuntu@54.209.77.52 sudo service flocker-docker-plugin start
+$ scp certs/plugin.* ubuntu@54.208.167.193:/home/ubuntu/
+plugin.crt                                                                                                                        100% 1862     1.8KB/s   00:00
+plugin.key                                                                                                                        100% 3268     3.2KB/s   00:00
+$ scp certs/plugin.* ubuntu@54.86.87.47:/home/ubuntu/
+plugin.crt                                                                                                                        100% 1862     1.8KB/s   00:00
+plugin.key                                                                                                                        100% 3268     3.2KB/s   00:00
+$ scp certs/plugin.* ubuntu@54.86.182.114:/home/ubuntu/
+plugin.crt                                                                                                                        100% 1862     1.8KB/s   00:00
+plugin.key                                                                                                                        100% 3268     3.2KB/s   00:00
+
+$ ssh ubuntu@54.208.167.193 sudo mv /home/ubuntu/plugin* /etc/flocker
+$ ssh ubuntu@54.86.87.47 sudo mv /home/ubuntu/plugin* /etc/flocker
+$ ssh ubuntu@54.86.182.114 sudo mv /home/ubuntu/plugin* /etc/flocker
+
+$ ssh ubuntu@54.208.167.193 sudo service flocker-docker-plugin start
+$ ssh ubuntu@54.86.87.47 sudo service flocker-docker-plugin start
+$ ssh ubuntu@54.86.182.114 sudo service flocker-docker-plugin start
 ```
 
 Configure your machine to use the `consul` machine as it also runs our Swarm Manager
