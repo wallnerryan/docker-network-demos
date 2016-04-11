@@ -81,22 +81,22 @@ Creating machine...
 .
 [output removed]
 RUNNING HANDLER [ClusterHQ.flocker : restart flocker-control] ******************
-changed: [54.173.143.36]
+changed: [54.86.142.130]
 
 RUNNING HANDLER [ClusterHQ.flocker : restart flocker-dataset-agent] ************
-changed: [54.89.100.226]
-changed: [52.91.239.197]
-changed: [54.173.143.36]
+changed: [54.86.142.130]
+changed: [52.91.14.21]
+changed: [54.209.77.52]
 
 RUNNING HANDLER [ClusterHQ.flocker : restart flocker-container-agent] **********
-changed: [52.91.239.197]
-changed: [54.89.100.226]
-changed: [54.173.143.36]
+changed: [54.86.142.130]
+changed: [52.91.14.21]
+changed: [54.209.77.52]
 
 PLAY RECAP *********************************************************************
-52.91.239.197              : ok=27   changed=14   unreachable=0    failed=0
-54.173.143.36              : ok=49   changed=33   unreachable=0    failed=0
-54.89.100.226              : ok=27   changed=14   unreachable=0    failed=0
+54.86.142.130             : ok=27   changed=14   unreachable=0    failed=0
+52.91.14.21               : ok=49   changed=33   unreachable=0    failed=0
+54.209.77.52              : ok=27   changed=14   unreachable=0    failed=0
 ```
 
 ### After it completes 
