@@ -1,5 +1,4 @@
 
-
 # HOW TO
 
 ### What you need installed.
@@ -118,6 +117,29 @@ ssh ubuntu@52.91.14.21 sudo service flocker-docker-plugin start
 ssh ubuntu@54.209.77.52 sudo service flocker-docker-plugin start
 ```
 
+Configure your machine to use the `consul` machine as it also runs our Swarm Manager
+
+> Note, Swarm manager is running on 3376 not 2376.
+
+```
+$ eval $(docker-machine env mha-consul)
+$ export DOCKER_HOST=tcp://54.174.155.130:3376
+$ docker -H tcp://54.174.155.130:3376 info
+Containers: 4
+ Running: 4
+ Paused: 0
+ Stopped: 0
+Images: 3
+Server Version: swarm/1.1.3
+Role: primary
+Strategy: spread
+Filters: health, port, dependency, affinity, constraint
+Nodes: 3
+.
+.
+.
+```
+
 Create a network
 ```
 $:-> docker network create -d overlay --subnet=10.0.0.0/24 overlay1
@@ -125,31 +147,57 @@ ecf3c1b528667bc31d6462f7fbbeda8d500926a423118646fa2ba954311ebdd1
 (ecs-flocker-testing)$:->
 (ecs-flocker-testing)$:-> docker network ls
 NETWORK ID          NAME                DRIVER
-ecf3c1b52866        overlay1            overlay
-```
-
-It should be available on all nodes now
-```
-$:-> docker-machine env mha-demo1
-export DOCKER_TLS_VERIFY="1"
-export DOCKER_HOST="tcp://52.91.14.21:2376"
-export DOCKER_CERT_PATH="/Users/wallnerryan/.docker/machine/machines/mha-demo1"
-export DOCKER_MACHINE_NAME="mha-demo1"
-# Run this command to configure your shell:
-# eval $(docker-machine env mha-demo1)
-(ecs-flocker-testing)$:-> eval $(docker-machine env mha-demo1)
-(ecs-flocker-testing)$:-> docker network ls
+$:-> docker network ls
 NETWORK ID          NAME                DRIVER
-9dba9f49d66b        bridge              bridge
-cb6d1413c425        none                null
-ef18331790c9        host                host
-ecf3c1b52866        overlay1            overlay
+2e2525945cec        mha-demo0/bridge    bridge
+509b60f6c99c        mha-demo1/bridge    bridge
+b09794fbcfeb        mha-demo2/host      host
+8e8e2114527d        mha-demo1/host      host
+a625425b9616        mha-demo2/bridge    bridge
+d3828be325f0        mha-demo2/none      null
+38497997fa97        mha-demo0/none      null
+ff031f6c7562        overlay1            overlay
+680a7f3c1f98        mha-demo0/host      host
+6c2db34b059b        mha-demo1/none      null
 ```
 
-Use Flocker
+Using Flocker
+
+#### Using Docker
+
+Simply just use the plugin.
+```
+$ docker volume create -d flocker --name test1 -o size=10G
+test1
+
+$ docker volume ls
+DRIVER              VOLUME NAME
+local               mha-demo0/b7222dbc0a0c4e0c159572888ada120c01a076442328507719c62b394a4f4876
+local               mha-demo0/87384887d0cc500825d0580775f2851cc21ffa6a05cffc5a5025ab1c7bf2a34a
+local               mha-demo1/7c20b1f15156c11b8bc3b53f40246d151b107886fa949b14ffc9b3ddac9ee514
+local               mha-demo2/dd705178a035707cb42527a72c3bbe7275c71419e6cd1c6da833106e3c639144
+flocker             test1
+```
+
+#### Use FlockerCTL
+
+First, point at your local Docker Toolbox Machine
+```
+$ eval $(docker-machine env <your-boot2docker-machine>)
+```
+
+Install `flokerctl` if you do not have it.
+```
+$ curl -sSL https://get.flocker.io |sh
+```
+
+Use FlockerCTL to list the nodes
+
+> Note, this will show the nodes private addresses.
+
 ```
 $ export CONTROL_NODE=<control-node-ip-from-agent-yml> to use flockerctl.
-$:-> flockerctl --user plugin \
+$ flockerctl --user plugin \
   --control-service $CONTROL_NODE \
   --certs-path=${PWD}/certs \
   list-nodes
@@ -160,80 +208,26 @@ ce9c0ec5   172.20.0.108
 4b215a26   172.20.0.17
 ```
 
-### Swarm is also setup.
-
+If you created the volume with the above Docker CLI using Flocker plugin, you can view the volume `test1` we created.
 ```
-docker-machine ls
-NAME         ACTIVE   DRIVER       STATE     URL                         SWARM   DOCKER    ERRORS
-mha-consul   *        amazonec2    Running   tcp://52.23.233.138:2376            v1.10.3
-mha-demo0    -        amazonec2    Running   tcp://52.201.226.200:2376           v1.10.3
-mha-demo1    -        amazonec2    Running   tcp://54.164.92.50:2376             v1.10.3
-mha-demo2    -        amazonec2    Running   tcp://52.87.183.133:2376            v1.10.3
+$ flockerctl --user plugin   --control-service=$CONTROL_NODE   --certs-path ${PWD}/certs   list
+DATASET                                SIZE     METADATA                              STATUS         SERVER
+1a4bba5c-01c5-4512-981a-e22e6fd1e329   10.00G   maximum_size=10737418240,name=test1   attached ✅   5d733cac (172.20.0.121)
 ```
-
-Consul node runs your Swarm Manager at Port 3376
-
-```
-$ eval $(docker-machine env mha-consul)
-$ docker -H tcp://52.23.233.138:3376 info
-Containers: 7
- Running: 5
- Paused: 0
- Stopped: 2
-Images: 4
-Server Version: swarm/1.1.3
-Role: replica
-Primary: 52.201.226.200:3376
-Strategy: spread
-Filters: health, port, dependency, affinity, constraint
-Nodes: 3
- mha-demo0: 52.201.226.200:2376
-  └ Status: Healthy
-  └ Containers: 4
-  └ Reserved CPUs: 0 / 2
-  └ Reserved Memory: 0 B / 7.67 GiB
-  └ Labels: executiondriver=native-0.2, kernelversion=3.13.0-74-generic, operatingsystem=Ubuntu 14.04.3 LTS, provider=amazonec2, storagedriver=aufs
-  └ Error: (none)
-  └ UpdatedAt: 2016-04-08T20:54:19Z
- mha-demo1: 54.164.92.50:2376
-  └ Status: Healthy
-  └ Containers: 1
-  └ Reserved CPUs: 0 / 2
-  └ Reserved Memory: 0 B / 7.67 GiB
-  └ Labels: executiondriver=native-0.2, kernelversion=3.13.0-74-generic, operatingsystem=Ubuntu 14.04.3 LTS, provider=amazonec2, storagedriver=aufs
-  └ Error: (none)
-  └ UpdatedAt: 2016-04-08T20:54:22Z
- mha-demo2: 52.87.183.133:2376
-  └ Status: Healthy
-  └ Containers: 2
-  └ Reserved CPUs: 0 / 2
-  └ Reserved Memory: 0 B / 7.67 GiB
-  └ Labels: executiondriver=native-0.2, kernelversion=3.13.0-74-generic, operatingsystem=Ubuntu 14.04.3 LTS, provider=amazonec2, storagedriver=aufs
-  └ Error: (none)
-  └ UpdatedAt: 2016-04-08T20:54:08Z
-Plugins:
- Volume:
- Network:
-Kernel Version: 3.13.0-74-generic
-Operating System: linux
-Architecture: amd64
-CPUs: 6
-Total Memory: 23.01 GiB
-Name: d2a56d6d556f
-```
-
-## Use swarm to create overlay, flocker volume and container with that volume
-
-//TODO
 
 ### Cleanup
 
 1) Delete any volumes from Flocker
 ```
-flockerctl --user api_user \
+$ eval $(docker-machine env mha-consul)
+$ export DOCKER_HOST=tcp://<mha-consul-public-ip>:3376
+$ docker volume rm test1
+
+$ eval $(docker-machine env <your-boot2docker-machine>)
+$ flockerctl --user plugin \
   --control-service $CONTROL_NODE \
   --certs-path=${PWD}/certs \
-  destroy -d <dataset-id-1>
+  destroy -d 1a4bba5c-01c5-4512-981a-e22e6fd1e329
 ```
 
 2) Delete Instances
@@ -245,5 +239,5 @@ About to remove mha-consul, mha-demo0, mha-demo1, mha-demo2
 Are you sure? (y/n): y
 ```
 
-3) Remove security group
+3) Remove security group via `aws` or via AWS Console
 
