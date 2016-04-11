@@ -194,6 +194,50 @@ local               mha-demo2/dd705178a035707cb42527a72c3bbe7275c71419e6cd1c6da8
 flocker             test1
 ```
 
+Use the volume
+
+```
+$docker run -it --volume-driver flocker --name test-container -v test1:/data --net overlay1 -d busybox
+eff88b07d5534c652668a19161d291188cc434a05850292f7a4911c6f004c765
+
+$ docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+eff88b07d553        busybox             "sh"                56 seconds ago      Up 33 seconds                           mha-demo1/test-container
+
+$ docker inspect -f "{{.Mounts}}" test-container
+[{test1 /flocker/1a4bba5c-01c5-4512-981a-e22e6fd1e329 /data flocker  true rprivate}]
+
+
+$ docker network inspect overlay1
+[
+    {
+        "Name": "overlay1",
+        "Id": "ff031f6c75621913da7dd37536ec44df624fdc3c1bbbd697f50e873fe4a32b34",
+        "Scope": "global",
+        "Driver": "overlay",
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "10.0.0.0/24"
+                }
+            ]
+        },
+        "Containers": {
+            "f006d187e8802f4a0544ceb46750d87ce19a60099f02541d2709e4698c784e50": {
+                "Name": "test-container",
+                "EndpointID": "770389cd4ec2cb3bee219da00bc1bf56c61ebce01465451f58a6b745d26256f7",
+                "MacAddress": "02:42:0a:00:00:02",
+                "IPv4Address": "10.0.0.2/24",
+                "IPv6Address": ""
+            }
+        },
+        "Options": {}
+    }
+]
+```
+
 #### Use FlockerCTL
 
 First, point at your local Docker Toolbox Machine
