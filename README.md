@@ -24,15 +24,17 @@ ansible-galaxy install ClusterHQ.flocker -p ./roles
 > Note you must use a pre-existing Amazon VPC Network for this to work. Cluster size will aslo be N + 1 as discovery service VM is not counted.
 
 ```
+# Replace these if you want to use other REGIONS, Images etc.
+
 export MY_AWS_AMI="ami-fce3c696"
 export MY_AWS_DEFAULT_REGION="us-east-1"
 export MY_AWS_VPC_ID="vpc-5d1c3539"
 export MY_AWS_INSTANCE_TYPE="m3.large"
 export MY_AWS_SSH_USER="ubuntu"
-export MY_SEC_GROUP_NAME="ryan-test-sec-group"
+export MY_SEC_GROUP_NAME="test-sec-group"
 export MY_AWS_ZONE="c"
 export MY_CLUSTER_SIZE=3
-export AWS_SSH_KEYPATH="/Users/wallnerryan/.ssh/id_rsa"
+export AWS_SSH_KEYPATH="/Users/<USERNAME>/.ssh/id_rsa"
 ```
 
 ### Set Credentials
@@ -115,23 +117,23 @@ Run the Flocker Docker Plugin on each "demo" node runing our Flocker agents.
 > Since we used a Ubuntu 14.04 image, we us `service` instead of `systemctl`, also, we're working on automating this. [see here](https://github.com/ClusterHQ/ansible-role-flocker/issues/2)
 
 ```
-$ scp certs/plugin.* ubuntu@54.208.167.193:/home/ubuntu/
+$ scp certs/plugin.* ubuntu@54.86.142.130:/home/ubuntu/
 plugin.crt                                                                                                                        100% 1862     1.8KB/s   00:00
 plugin.key                                                                                                                        100% 3268     3.2KB/s   00:00
-$ scp certs/plugin.* ubuntu@54.86.87.47:/home/ubuntu/
+$ scp certs/plugin.* ubuntu@52.91.14.21:/home/ubuntu/
 plugin.crt                                                                                                                        100% 1862     1.8KB/s   00:00
 plugin.key                                                                                                                        100% 3268     3.2KB/s   00:00
-$ scp certs/plugin.* ubuntu@54.86.182.114:/home/ubuntu/
+$ scp certs/plugin.* ubuntu@54.209.77.52:/home/ubuntu/
 plugin.crt                                                                                                                        100% 1862     1.8KB/s   00:00
 plugin.key                                                                                                                        100% 3268     3.2KB/s   00:00
 
-$ ssh ubuntu@54.208.167.193 sudo mv /home/ubuntu/plugin* /etc/flocker
-$ ssh ubuntu@54.86.87.47 sudo mv /home/ubuntu/plugin* /etc/flocker
-$ ssh ubuntu@54.86.182.114 sudo mv /home/ubuntu/plugin* /etc/flocker
+$ ssh ubuntu@54.86.142.130 sudo mv /home/ubuntu/plugin* /etc/flocker
+$ ssh ubuntu@52.91.14.21 sudo mv /home/ubuntu/plugin* /etc/flocker
+$ ssh ubuntu@54.209.77.52 sudo mv /home/ubuntu/plugin* /etc/flocker
 
-$ ssh ubuntu@54.208.167.193 sudo service flocker-docker-plugin start
-$ ssh ubuntu@54.86.87.47 sudo service flocker-docker-plugin start
-$ ssh ubuntu@54.86.182.114 sudo service flocker-docker-plugin start
+$ ssh ubuntu@54.86.142.130 sudo service flocker-docker-plugin start
+$ ssh ubuntu@52.91.14.21 sudo service flocker-docker-plugin start
+$ ssh ubuntu@54.209.77.52 sudo service flocker-docker-plugin start
 ```
 
 Configure your machine to use the `consul` machine as it also runs our Swarm Manager
@@ -273,9 +275,7 @@ If you created the volume with the above Docker CLI using Flocker plugin, you ca
 ```
 $ flockerctl --user plugin   --control-service=$CONTROL_NODE   --certs-path ${PWD}/certs   list
 DATASET                                SIZE     METADATA                              STATUS         SERVER
-1a4bba5c-01c5-4512-981a-e22e6fd1e329   10.00G   maximum_size=10737418240,name=test1   attached ✅   5d733cac (172.20.0.121)
-```
-
+1a4bba5c-01c5-4512-981a-e22e6fd1e329   10.00G   maximum_size=10737418240,name=test1   attached ✅   5d733cac (172.20.0.108)```
 ### Cleanup
 
 1) Delete any volumes from Flocker
