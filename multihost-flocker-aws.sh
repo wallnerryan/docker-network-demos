@@ -21,6 +21,8 @@ export AWS_VPC_ID=${MY_AWS_VPC_ID:="vpc-5d1c3539"}
 export AWS_INSTANCE_TYPE=${MY_AWS_INSTANCE_TYPE:="m3.large"}
 export AWS_SSH_USER=${MY_AWS_SSH_USER:="ubuntu"}
 export AWS_ZONE=${MY_AWS_ZONE:="c"}
+export CLUSTER_SIZE=${MY_CLUSTER_SIZE:=3}
+
 #### Set up Security Group in AWS
 
 aws ec2 create-security-group --group-name ${group_name} --vpc-id ${AWS_VPC_ID} --description "A Security Group for Docker Networking"
@@ -42,6 +44,10 @@ aws ec2 authorize-security-group-ingress --group-id ${group_id} --protocol tcp -
 aws ec2 authorize-security-group-ingress --group-id ${group_id} --protocol tcp --port 3376 --cidr 0.0.0.0/0
 
 ##### Docker Machine Setup
+
+# Setup 2 Machines
+# 1) Consul for Service Discovery and Primary Swarm Manager
+# 2) Agent node and Control Service for Flocker and Secondary Swarm Manager
 
 docker-machine create \
     -d amazonec2 \
@@ -83,29 +89,25 @@ docker $(docker-machine config mha-demo0) run -d \
    --advertise=$(docker-machine ip mha-demo0):2376 \
    consul://$(docker-machine ip mha-consul):8500
 
-docker-machine create \
-    -d amazonec2 \
-    --amazonec2-security-group ${group_name} \
-    --engine-opt="cluster-store=consul://$(docker-machine ip mha-consul):8500" \
-    --engine-opt="cluster-advertise=eth0:0" \
-    mha-demo1
 
-docker $(docker-machine config mha-demo1) run -d \
-   --restart=always swarm join \
-   --advertise=$(docker-machine ip mha-demo1):2376 \
-   consul://$(docker-machine ip mha-consul):8500
+# Create the rest of the machines as agent nodes.
 
-docker-machine create \
-    -d amazonec2 \
-    --amazonec2-security-group ${group_name} \
-    --engine-opt="cluster-store=consul://$(docker-machine ip mha-consul):8500" \
-    --engine-opt="cluster-advertise=eth0:0" \
-    mha-demo2
+# We have already created demo0, so minus 1
+((AGENTS = ${CLUSTER_SIZE} - 1))
+for i in `seq 1 ${AGENTS}`;
+do
+   docker-machine create \
+       -d amazonec2 \
+       --amazonec2-security-group ${group_name} \
+       --engine-opt="cluster-store=consul://$(docker-machine ip mha-consul):8500" \
+       --engine-opt="cluster-advertise=eth0:0" \
+       mha-demo${i}
 
-docker $(docker-machine config mha-demo2) run -d \
-   --restart=always swarm join \
-   --advertise=$(docker-machine ip mha-demo2):2376 \
-   consul://$(docker-machine ip mha-consul):8500
+   docker $(docker-machine config mha-demo${i}) run -d \
+      --restart=always swarm join \
+      --advertise=$(docker-machine ip mha-demo${i}):2376 \
+      consul://$(docker-machine ip mha-consul):8500
+done
 
 echo "Done!"
 echo "Installing Flocker..."

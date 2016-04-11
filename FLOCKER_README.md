@@ -21,7 +21,7 @@ ansible-galaxy install ClusterHQ.flocker -p ./roles
 
 ### Export environment variables. 
 
-> Note you must use a pre-existing Amazon VPC Network for this to work.
+> Note you must use a pre-existing Amazon VPC Network for this to work. Cluster size will aslo be N + 1 as discovery service VM is not counted.
 
 ```
 export MY_AWS_AMI="ami-fce3c696"
@@ -31,6 +31,7 @@ export MY_AWS_INSTANCE_TYPE="m3.large"
 export MY_AWS_SSH_USER="ubuntu"
 export MY_SEC_GROUP_NAME="ryan-test-sec-group"
 export MY_AWS_ZONE="c"
+export MY_CLUSTER_SIZE=4
 export AWS_SSH_KEYPATH="/Users/wallnerryan/.ssh/id_rsa"
 ```
 
