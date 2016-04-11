@@ -31,7 +31,7 @@ export MY_AWS_INSTANCE_TYPE="m3.large"
 export MY_AWS_SSH_USER="ubuntu"
 export MY_SEC_GROUP_NAME="ryan-test-sec-group"
 export MY_AWS_ZONE="c"
-export MY_CLUSTER_SIZE=4
+export MY_CLUSTER_SIZE=3
 export AWS_SSH_KEYPATH="/Users/wallnerryan/.ssh/id_rsa"
 ```
 
@@ -42,6 +42,8 @@ export AWS_SECRET_ACCESS_KEY=
 ```
 
 ### Run the installation
+
+> Note, this example for a 4 or 5 node cluster takes about ~15 mins to install.
 
 ```
 ./multihost-flocker-aws.sh
