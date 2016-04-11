@@ -275,7 +275,9 @@ If you created the volume with the above Docker CLI using Flocker plugin, you ca
 ```
 $ flockerctl --user plugin   --control-service=$CONTROL_NODE   --certs-path ${PWD}/certs   list
 DATASET                                SIZE     METADATA                              STATUS         SERVER
-1a4bba5c-01c5-4512-981a-e22e6fd1e329   10.00G   maximum_size=10737418240,name=test1   attached ✅   5d733cac (172.20.0.108)```
+1a4bba5c-01c5-4512-981a-e22e6fd1e329   10.00G   maximum_size=10737418240,name=test1   attached ✅   5d733cac (172.20.0.108)
+```
+
 ### Cleanup
 
 1) Delete any volumes from Flocker
