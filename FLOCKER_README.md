@@ -2,7 +2,27 @@
 
 # HOW TO
 
-Install Docker Machine
+### What you need installed.
+
+Make sure `docker-machine` and `aws` cli are installed
+```
+$:-> docker-machine --version
+docker-machine version 0.6.0, build e27fb87
+
+(virtualenv-aws)$:-> aws --version
+aws-cli/1.9.1 Python/2.7.10 Darwin/15.2.0 botocore/1.3.1
+```
+
+Also, makre sure you have `ansible` and `flocker-ca`
+```
+pip install ansible
+pip install https://clusterhq-archive.s3.amazonaws.com/python/Flocker-1.11.0-py2-none-any.whl
+ansible-galaxy install ClusterHQ.flocker -p ./roles
+```
+
+### Export environment variables. 
+
+> Note you must use a pre-existing Amazon VPC Network for this to work.
 
 ```
 export MY_AWS_AMI="ami-fce3c696"
@@ -13,23 +33,6 @@ export MY_AWS_SSH_USER="ubuntu"
 export MY_SEC_GROUP_NAME="ryan-test-sec-group"
 export MY_AWS_ZONE="c"
 export AWS_SSH_KEYPATH="/Users/wallnerryan/.ssh/id_rsa"
-```
-
-### Install Tools
-
-```
-pip install ansible
-pip install https://clusterhq-archive.s3.amazonaws.com/python/Flocker-1.11.0-py2-none-any.whl
-ansible-galaxy install ClusterHQ.flocker -p ./roles
-```
-
-### Make sure `docker-machine` and `aws` cli are installed
-```
-$:-> docker-machine --version
-docker-machine version 0.6.0, build e27fb87
-
-(virtualenv-aws)$:-> aws --version
-aws-cli/1.9.1 Python/2.7.10 Darwin/15.2.0 botocore/1.3.1
 ```
 
 ### Set Credentials
@@ -103,6 +106,16 @@ mha-consul   -        amazonec2    Running   tcp://54.174.155.130:2376          
 mha-demo0    -        amazonec2    Running   tcp://54.86.142.130:2376            v1.10.3
 mha-demo1    -        amazonec2    Running   tcp://52.91.14.21:2376              v1.10.3
 mha-demo2    -        amazonec2    Running   tcp://54.209.77.52:2376             v1.10.3
+```
+
+Run the Flocker Docker Plugin on each "demo" node runing our Flocker agents.
+
+> Since we used a Ubuntu 14.04 image, we us `service` instead of `systemctl`
+
+```
+ssh ubuntu@54.86.142.130 sudo service flocker-docker-plugin start
+ssh ubuntu@52.91.14.21 sudo service flocker-docker-plugin start
+ssh ubuntu@54.209.77.52 sudo service flocker-docker-plugin start
 ```
 
 Create a network
