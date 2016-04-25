@@ -34,9 +34,14 @@ def main(input_data):
         for instance in instances:
             inventory_output.write(instance[u'ip'] + '\n')
         inventory_output.write('\n')
+        inventory_output.write('[flocker_docker_plugin]\n')
+        for instance in instances:
+            inventory_output.write(instance[u'ip'] + '\n')
+        inventory_output.write('\n')
         inventory_output.write('[nodes:children]\n')
         inventory_output.write('flocker_control_service\n')
         inventory_output.write('flocker_agents\n')
+        inventory_output.write('flocker_docker_plugin\n')
 
     with open('./agent.yml', 'w') as agent_yml:
         agent_yml.write(_AGENT_YML % (instances[0][u'ip'], os.environ['AWS_ACCESS_KEY_ID'], os.environ['AWS_SECRET_ACCESS_KEY'], os.environ['MY_AWS_DEFAULT_REGION'], os.environ['MY_AWS_DEFAULT_REGION'] + os.environ['MY_AWS_ZONE']))
