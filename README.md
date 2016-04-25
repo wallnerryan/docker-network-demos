@@ -118,7 +118,7 @@ Configure your machine to use the `consul` machine as it also runs our Swarm Man
 ```
 $ eval $(docker-machine env mha-consul)
 $ export DOCKER_HOST=tcp://54.174.155.130:3376
-$ docker -H tcp://54.174.155.130:3376 info
+$ docker info
 Containers: 4
  Running: 4
  Paused: 0
