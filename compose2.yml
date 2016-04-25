@@ -1,0 +1,23 @@
+version: '2'
+services:
+  cassandra-3:
+    image: cassandra
+    container_name: cassandra-3
+    environment:
+      CASSANDRA_BROADCAST_ADDRESS: "cassandra-3"
+      CASSANDRA_SEEDS: "cassandra-1"
+    ports:
+    - 7000
+    volumes:
+    - "cassandra3:/var/lib/cassandra"
+    restart: always
+
+volumes:
+  cassandra3:
+    external:
+        name: testvol3
+
+networks:
+  default:
+    external:
+       name: overlay-net
