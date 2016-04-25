@@ -14,9 +14,8 @@ aws-cli/1.9.1 Python/2.7.10 Darwin/15.2.0 botocore/1.3.1
 
 Also, makre sure you have `ansible` and `flocker-ca`
 ```
-pip install ansible
-pip install https://clusterhq-archive.s3.amazonaws.com/python/Flocker-1.11.0-py2-none-any.whl
-ansible-galaxy install ClusterHQ.flocker -p ./roles
+brew install flocker-1.11.0 #(or pip install https://clusterhq-archive.s3.amazonaws.com/python/Flocker-1.11.0-py2-none-any.whl)
+brew install ansible #(or pip install ansible)
 ```
 
 ### Export environment variables. 
@@ -110,30 +109,6 @@ mha-consul   -        amazonec2    Running   tcp://54.174.155.130:2376          
 mha-demo0    -        amazonec2    Running   tcp://54.86.142.130:2376            v1.10.3
 mha-demo1    -        amazonec2    Running   tcp://52.91.14.21:2376              v1.10.3
 mha-demo2    -        amazonec2    Running   tcp://54.209.77.52:2376             v1.10.3
-```
-
-Run the Flocker Docker Plugin on each "demo" node runing our Flocker agents.
-
-> Since we used a Ubuntu 14.04 image, we us `service` instead of `systemctl`, also, we're working on automating this. [see here](https://github.com/ClusterHQ/ansible-role-flocker/issues/2)
-
-```
-$ scp certs/plugin.* ubuntu@54.86.142.130:/home/ubuntu/
-plugin.crt                                                                                                                        100% 1862     1.8KB/s   00:00
-plugin.key                                                                                                                        100% 3268     3.2KB/s   00:00
-$ scp certs/plugin.* ubuntu@52.91.14.21:/home/ubuntu/
-plugin.crt                                                                                                                        100% 1862     1.8KB/s   00:00
-plugin.key                                                                                                                        100% 3268     3.2KB/s   00:00
-$ scp certs/plugin.* ubuntu@54.209.77.52:/home/ubuntu/
-plugin.crt                                                                                                                        100% 1862     1.8KB/s   00:00
-plugin.key                                                                                                                        100% 3268     3.2KB/s   00:00
-
-$ ssh ubuntu@54.86.142.130 sudo mv /home/ubuntu/plugin* /etc/flocker
-$ ssh ubuntu@52.91.14.21 sudo mv /home/ubuntu/plugin* /etc/flocker
-$ ssh ubuntu@54.209.77.52 sudo mv /home/ubuntu/plugin* /etc/flocker
-
-$ ssh ubuntu@54.86.142.130 sudo service flocker-docker-plugin start
-$ ssh ubuntu@52.91.14.21 sudo service flocker-docker-plugin start
-$ ssh ubuntu@54.209.77.52 sudo service flocker-docker-plugin start
 ```
 
 Configure your machine to use the `consul` machine as it also runs our Swarm Manager
