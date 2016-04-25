@@ -1,6 +1,10 @@
 
 # HOW TO
 
+Clone the repo.
+
+`git clone -b flocker-aws-ansible-multihost https://github.com/wallnerryan/docker-network-demos`
+
 ### What you need installed.
 
 Make sure `docker-machine` and `aws` cli are installed
