@@ -16,7 +16,7 @@ run the script
 Create an agent yml to help install flocker
 ```
 version: 1
-  control-service:
+control-service:
     hostname: "user.controlserver.example.com"
     port: 4524
 dataset:
@@ -58,6 +58,8 @@ $ cat playbook.yml
   user: root
   roles:
     - role: ClusterHQ.flocker
+      flocker_api_cert_name: plugin
+      flocker_install_docker_plugin: true
 ```
 
 Then run the playbook
