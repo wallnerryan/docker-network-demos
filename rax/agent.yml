@@ -1,5 +1,5 @@
 version: 1
-  control-service:
+control-service:
     hostname: "<PUBLIC_IP_OF_CONTROL_NODE>"
     port: 4524
 dataset:
