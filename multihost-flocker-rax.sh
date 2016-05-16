@@ -18,6 +18,9 @@ if [ -z $OS_REGION_NAME ]; then
     exit 1
 fi
 
+RAX_IMAGEID="1f8c7a07-b892-445b-9fd8-878a13d19c06"
+#RAX_IMAGEID="Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)"
+
 ##### Docker Machine Setup
 
 # Setup 2 Machines
@@ -26,6 +29,7 @@ fi
 
 docker-machine create \
     -d rackspace \
+    --rackspace-image-id $RAX_IMAGEID \
     mha-consul
 
 docker $(docker-machine config mha-consul) run -d \
@@ -44,6 +48,7 @@ docker $(docker-machine config mha-consul) run -d \
 
 docker-machine create \
     -d rackspace \
+    --rackspace-image-id $RAX_IMAGEID \
     --engine-opt="cluster-store=consul://$(docker-machine ip mha-consul):8500" \
     --engine-opt="cluster-advertise=eth0:0" \
     mha-demo0
@@ -66,11 +71,13 @@ docker $(docker-machine config mha-demo0) run -d \
 # Create the rest of the machines as agent nodes.
 
 # We have already created demo0, so minus 1
+CLUSTER_SIZE=${MY_CLUSTER_SIZE}
 ((AGENTS = ${CLUSTER_SIZE} - 1))
 for i in `seq 1 ${AGENTS}`;
 do
    docker-machine create \
        -d rackspace \
+       --rackspace-image-id $RAX_IMAGEID \
        --engine-opt="cluster-store=consul://$(docker-machine ip mha-consul):8500" \
        --engine-opt="cluster-advertise=eth0:0" \
        mha-demo${i}
