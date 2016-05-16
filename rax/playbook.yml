@@ -1,0 +1,7 @@
+---
+- hosts: nodes
+  user: root
+  roles:
+    - role: ClusterHQ.flocker
+      flocker_api_cert_name: plugin
+      flocker_install_docker_plugin: true

@@ -1,0 +1,15 @@
+[flocker_control_service]
+<CONTROL_IP>	ansible_ssh_private_key_file=~/.docker/machine/machines/<CONTROL_NODE>/id_rsa
+
+[flocker_agents]
+<AGENT_IP1>   ansible_ssh_private_key_file=~/.docker/machine/machines/<AGENT0>/id_rsa
+<AGENT_IP2>   ansible_ssh_private_key_file=~/.docker/machine/machines/<AGENT1>/id_rsa
+
+[flocker_docker_plugin]
+<AGENT_IP1>   ansible_ssh_private_key_file=~/.docker/machine/machines/<AGENT0>/id_rsa
+<AGENT_IP2>   ansible_ssh_private_key_file=~/.docker/machine/machines/<AGENT1>/id_rsa
+
+[nodes:children]
+flocker_control_service
+flocker_agents
+flocker_docker_plugin

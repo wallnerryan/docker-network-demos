@@ -1,0 +1,11 @@
+version: 1
+  control-service:
+    hostname: "<PUBLIC_IP_OF_CONTROL_NODE>"
+    port: 4524
+dataset:
+    backend: "openstack"
+    region: "<REGION>"
+    auth_plugin: "rackspace"
+    username: "<USERNAME>"
+    api_key: "<API_KEY>"
+    auth_url: "https://identity.api.rackspacecloud.com/v2.0"
