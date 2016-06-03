@@ -2,6 +2,10 @@
 
 set -e
 
+# The difference with this script is that is doesnt set up swarm or consul.
+# this is deffered to the scripts multihost-flocker-aws-add-ucp-control.sh and
+# multihost-flocker-aws-add-ucp-nodes.sh
+
 #### Set Up Environment
 
 if [ -z $AWS_ACCESS_KEY_ID ]; then
@@ -54,45 +58,12 @@ docker-machine create \
     --amazonec2-security-group ${group_name} \
     mha-aws-consul
 
-docker $(docker-machine config mha-aws-consul) run -d \
-    -p "8500:8500" \
-    -h "consul" \
-    progrium/consul -server -bootstrap
-
-docker $(docker-machine config mha-aws-consul) run -d \
-    -p 3376:3376 -v /etc/docker/:/certs:ro swarm manage \
-    --host=0.0.0.0:3376 \
-    --heartbeat 5s \
-    --tlsverify --tlscacert=/certs/ca.pem \
-    --tlscert=/certs/server.pem \
-    --tlskey=/certs/server-key.pem \
-    --replication --advertise $(docker-machine ip mha-aws-consul):3376 \
-    consul://$(docker-machine ip mha-aws-consul):8500
-
 docker-machine create \
     -d amazonec2 \
     --amazonec2-security-group ${group_name} \
     --engine-opt="cluster-store=consul://$(docker-machine ip mha-aws-consul):8500" \
     --engine-opt="cluster-advertise=eth0:0" \
     mha-aws-demo0
-
-docker $(docker-machine config mha-aws-demo0) run -d \
-    -p 3376:3376 -v /etc/docker/:/certs:ro swarm manage \
-    --host=0.0.0.0:3376 \
-    --replication-ttl 10s \
-    --tlsverify --tlscacert=/certs/ca.pem \
-    --tlscert=/certs/server.pem \
-    --tlskey=/certs/server-key.pem \
-    --replication --advertise $(docker-machine ip mha-aws-demo0):3376 \
-    consul://$(docker-machine ip mha-aws-consul):8500
-
-docker $(docker-machine config mha-aws-demo0) run -d \
-   --restart=always swarm join \
-   --heartbeat 15s \
-   --ttl 30s \
-   --advertise=$(docker-machine ip mha-aws-demo0):2376 \
-   consul://$(docker-machine ip mha-aws-consul):8500
-
 
 # Create the rest of the machines as agent nodes.
 
@@ -106,13 +77,6 @@ do
        --engine-opt="cluster-store=consul://$(docker-machine ip mha-aws-consul):8500" \
        --engine-opt="cluster-advertise=eth0:0" \
        mha-aws-demo${i}
-
-   docker $(docker-machine config mha-aws-demo${i}) run -d \
-      --restart=always swarm join \
-      --heartbeat 15s \
-      --ttl 30s \
-      --advertise=$(docker-machine ip mha-aws-demo${i}):2376 \
-      consul://$(docker-machine ip mha-aws-consul):8500
 done
 
 echo "Done!"
