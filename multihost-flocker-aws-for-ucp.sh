@@ -61,8 +61,6 @@ docker-machine create \
 docker-machine create \
     -d amazonec2 \
     --amazonec2-security-group ${group_name} \
-    --engine-opt="cluster-store=consul://$(docker-machine ip mha-aws-consul):8500" \
-    --engine-opt="cluster-advertise=eth0:0" \
     mha-aws-demo0
 
 # Create the rest of the machines as agent nodes.
@@ -74,8 +72,6 @@ do
    docker-machine create \
        -d amazonec2 \
        --amazonec2-security-group ${group_name} \
-       --engine-opt="cluster-store=consul://$(docker-machine ip mha-aws-consul):8500" \
-       --engine-opt="cluster-advertise=eth0:0" \
        mha-aws-demo${i}
 done
 
