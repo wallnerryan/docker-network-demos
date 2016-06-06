@@ -26,20 +26,19 @@ export CLUSTER_SIZE=${MY_CLUSTER_SIZE:=3}
 for i in `seq 0 ${AGENTS}`;
 do
    docker $(docker-machine config mha-aws-demo${i}) run --rm -it --name ucp-engine-disc \
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  docker/ucp engine-discovery \
-  --controller $(docker-machine config mha-aws-consul) \
-  --host-address $(docker-machine config mha-aws-demo${i}) \
-  --update
+   -v /var/run/docker.sock:/var/run/docker.sock \
+   docker/ucp engine-discovery \
+   --controller $(docker-machine config mha-aws-consul) \
+   --host-address $(docker-machine config mha-aws-demo${i}) \
+   --update
 
-  # wait for initialization
-  sleep 10
+   # wait for initialization
+   sleep 10
 
-  docker-machine ssh mha-aws-demo${i} sudo service docker restart
+   docker-machine ssh mha-aws-demo${i} sudo service docker restart
 
-  # give time for daemon to restart.
-  sleep 5
-
+   # give time for daemon to restart.
+   sleep 5
 done
 
 echo "Done!"

@@ -1,6 +1,6 @@
 
 
-# Multi-host Netowkring on UCP
+# Multi-host Networking on UCP
 
 - assumes you have run `multihost-flocker-aws-for-ucp.sh`
 - you can do this manually for use `multihost-flocker-aws-add-ucp-multihostnet.sh`
