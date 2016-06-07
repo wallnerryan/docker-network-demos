@@ -4,11 +4,12 @@ set -e
 
 #### Set Up Environment
 
-docker $(docker-machine config mha-aws-consul) run --rm -it --name ucp-engine-disc \
+docker $(docker-machine config mha-aws-consul) run --rm -it \
+  --name ucp-engine-disc \
   -v /var/run/docker.sock:/var/run/docker.sock \
   docker/ucp engine-discovery \
-  --controller $(docker-machine config mha-aws-consul) \
-  --host-address $(docker-machine config mha-aws-consul) \
+  --controller $(docker-machine ip mha-aws-consul) \
+  --host-address $(docker-machine ip mha-aws-consul) \
   --update
 
 # wait for initialization
@@ -28,8 +29,8 @@ do
    docker $(docker-machine config mha-aws-demo${i}) run --rm -it --name ucp-engine-disc \
    -v /var/run/docker.sock:/var/run/docker.sock \
    docker/ucp engine-discovery \
-   --controller $(docker-machine config mha-aws-consul) \
-   --host-address $(docker-machine config mha-aws-demo${i}) \
+   --controller $(docker-machine ip mha-aws-consul) \
+   --host-address $(docker-machine ip mha-aws-demo${i}) \
    --update
 
    # wait for initialization

@@ -20,11 +20,8 @@ aws ec2 authorize-security-group-egress --group-id ${group_id} --protocol tcp --
 aws ec2 authorize-security-group-ingress --group-id ${group_id} --protocol tcp --port 2375 --cidr 0.0.0.0/0 || true
 #alternative swarm port since docker already uses it.
 aws ec2 authorize-security-group-ingress --group-id ${group_id} --protocol tcp --port 23766 --cidr 0.0.0.0/0 || true
-aws ec2 authorize-security-group-ingress --group-id ${group_id} --protocol udp --port 4789 --cidr 0.0.0.0/0 || true
 aws ec2 authorize-security-group-egress --group-id ${group_id} --protocol udp --port 4789 --cidr 0.0.0.0/0 || true
-aws ec2 authorize-security-group-ingress --group-id ${group_id} --protocol tcp --port 7946 --cidr 0.0.0.0/0 || true
 aws ec2 authorize-security-group-egress --group-id ${group_id} --protocol tcp --port 7946 --cidr 0.0.0.0/0 || true
-aws ec2 authorize-security-group-ingress --group-id ${group_id} --protocol udp --port 7946 --cidr 0.0.0.0/0 || true
 aws ec2 authorize-security-group-egress --group-id ${group_id} --protocol udp --port 7946 --cidr 0.0.0.0/0 || true
 aws ec2 authorize-security-group-ingress --group-id ${group_id} --protocol tcp --port 12376 --cidr 0.0.0.0/0 || true
 aws ec2 authorize-security-group-ingress --group-id ${group_id} --protocol tcp --port 12379 --cidr 0.0.0.0/0 || true
