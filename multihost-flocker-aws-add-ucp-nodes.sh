@@ -2,9 +2,16 @@
 
 set -e
 
+read -p "Make sure you export UCP_FINGERPRINT from the controller, continue? [Yy]  " -n 1 -r
+echo    # (optional) move to a new line
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+    exit 1
+fi
+
 #### Set Up Environment
 
-if [ -z $UCP_FINGERPRINT ]; then
+if [ -z "$UCP_FINGERPRINT" ]; then
     echo "Please supply your UCP_FINGERPRINT"
     exit 1
 fi
