@@ -1,13 +1,14 @@
 version: '2'
 volumes:
-  demo:
+  demononet:
     driver: flocker
 services:
   web:
     image: clusterhq/moby-counter:dcsea
     environment:
        - "USE_REDIS_HOST=redis"
-       - "affinity:container==app_redis_1"
+       - "affinity:container==apps_redis_1"
+       - "reschedule:on-node-failure"
     links:
       - redis
     ports:
@@ -15,6 +16,7 @@ services:
   redis:
     image: redis:latest
     environment:
-       - "constraint:node==mha-aws-demo2"
+       - "constraint:node!=mha-aws-demo1"
+       - "reschedule:on-node-failure"
     volumes:
-       - 'demo:/data'
+       - 'demononet:/data'
