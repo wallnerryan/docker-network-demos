@@ -8,7 +8,6 @@ services:
     environment:
        - "USE_REDIS_HOST=redis"
        - "affinity:container==apps_redis_1"
-       - "reschedule:on-node-failure"
     links:
       - redis
     ports:
@@ -16,7 +15,6 @@ services:
   redis:
     image: redis:latest
     environment:
-       - "constraint:node!=mha-aws-demo1"
-       - "reschedule:on-node-failure"
+       - "constraint:node==mha-aws-demo1"
     volumes:
        - 'demononet:/data'

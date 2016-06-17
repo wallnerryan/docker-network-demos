@@ -2,7 +2,7 @@
 
 set -e
 
-read -p "This script assumes you have run multihost-flocker-aws.sh, are you sure? [Yy]  " -n 1 -r
+read -p "This script assumes you have run multihost-flocker-aws-for-ucp.sh, are you sure? [Yy]  " -n 1 -r
 echo    # (optional) move to a new line
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
