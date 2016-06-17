@@ -33,6 +33,7 @@ aws ec2 authorize-security-group-ingress --group-id ${group_id} --protocol tcp -
 aws ec2 authorize-security-group-ingress --group-id ${group_id} --protocol tcp --port 12385 --cidr 0.0.0.0/0 || true
 aws ec2 authorize-security-group-ingress --group-id ${group_id} --protocol tcp --port 12386 --cidr 0.0.0.0/0 || true
 
+PrivateIP=$(cat ~/.docker/machine/machines/mha-aws-consul/config.json | grep 'PrivateIPAddress' | grep -Eo '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
 
 docker $(docker-machine config mha-aws-consul) run -d \
    --name ucp \
@@ -40,7 +41,7 @@ docker $(docker-machine config mha-aws-consul) run -d \
    docker/ucp install \
    --fresh-install \
    --swarm-port 23766 \
-   --host-address=$(docker-machine ip mha-aws-consul) \
+   --host-address=${PrivateIP} \
+   --san ${PrivateIP} \
    --san $(docker-machine ip mha-aws-consul)
-
 

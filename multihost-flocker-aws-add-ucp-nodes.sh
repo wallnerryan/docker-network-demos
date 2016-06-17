@@ -22,7 +22,9 @@ export CLUSTER_SIZE=${MY_CLUSTER_SIZE:=3}
 ((AGENTS = ${CLUSTER_SIZE} - 1))
 for i in `seq 0 ${AGENTS}`;
 do
-   docker $(docker-machine config mha-aws-demo${i}) run -d \
+    PrivateIP=$(cat ~/.docker/machine/machines/mha-aws-demo${i}/config.json | grep 'PrivateIPAddress' | grep -Eo '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
+    ControlPrivateIP=$(cat ~/.docker/machine/machines/mha-aws-consul/config.json | grep 'PrivateIPAddress' | grep -Eo '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
+    docker $(docker-machine config mha-aws-demo${i}) run -d \
       --name ucp \
       -v /var/run/docker.sock:/var/run/docker.sock \
       -e UCP_ADMIN_USER=admin -e UCP_ADMIN_PASSWORD=orca \
@@ -30,8 +32,9 @@ do
       --swarm-port 23766 \
       --fresh-install \
       --san $(docker-machine ip mha-aws-demo${i}) \
-      --host-address $(docker-machine ip mha-aws-demo${i}) \
-      --url https://$(docker-machine ip mha-aws-consul) \
+      --san ${PrivateIP} \
+      --host-address ${PrivateIP} \
+      --url https://${ControlPrivateIP} \
       --fingerprint ${UCP_FINGERPRINT}
 done
 

@@ -4,12 +4,13 @@ set -e
 
 #### Set Up Environment
 
+ControlPrivateIP=$(cat ~/.docker/machine/machines/mha-aws-consul/config.json | grep 'PrivateIPAddress' | grep -Eo '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
 docker $(docker-machine config mha-aws-consul) run --rm -it \
   --name ucp-engine-disc \
   -v /var/run/docker.sock:/var/run/docker.sock \
   docker/ucp engine-discovery \
-  --controller $(docker-machine ip mha-aws-consul) \
-  --host-address $(docker-machine ip mha-aws-consul) \
+  --controller ${ControlPrivateIP} \
+  --host-address ${ControlPrivateIP} \
   --update
 
 # wait for initialization
@@ -26,11 +27,12 @@ export CLUSTER_SIZE=${MY_CLUSTER_SIZE:=3}
 ((AGENTS = ${CLUSTER_SIZE} - 1))
 for i in `seq 0 ${AGENTS}`;
 do
+   PrivateIP=$(cat ~/.docker/machine/machines/mha-aws-demo${i}/config.json | grep 'PrivateIPAddress' | grep -Eo '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
    docker $(docker-machine config mha-aws-demo${i}) run --rm -it --name ucp-engine-disc \
    -v /var/run/docker.sock:/var/run/docker.sock \
    docker/ucp engine-discovery \
-   --controller $(docker-machine ip mha-aws-consul) \
-   --host-address $(docker-machine ip mha-aws-demo${i}) \
+   --controller ${ControlPrivateIP} \
+   --host-address ${PrivateIP} \
    --update
 
    # wait for initialization

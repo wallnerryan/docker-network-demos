@@ -1,0 +1,26 @@
+version: '2'
+volumes:
+  demo:
+    driver: flocker
+networks:
+  demo-net:
+    driver: overlay
+services:
+  web:
+    image: clusterhq/moby-counter:dcsea
+    environment:
+       - "USE_REDIS_HOST=redis"
+    ports:
+      - "80:80"
+    depends_on:
+      - redis
+    networks:
+     - demo-net
+  redis:
+    image: redis:latest
+    environment:
+       - "constraint:node==node1"
+    volumes:
+       - 'demo:/data'
+    networks:
+     - demo-net
