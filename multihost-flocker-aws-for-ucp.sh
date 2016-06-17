@@ -46,6 +46,8 @@ aws ec2 authorize-security-group-ingress --group-id ${group_id} --protocol tcp -
 aws ec2 authorize-security-group-ingress --group-id ${group_id} --protocol tcp --port 4523 --cidr 0.0.0.0/0
 #Swarm Manager 
 aws ec2 authorize-security-group-ingress --group-id ${group_id} --protocol tcp --port 3376 --cidr 0.0.0.0/0
+#Moby App 
+aws ec2 authorize-security-group-ingress --group-id ${group_id} --protocol tcp --port 80 --cidr 0.0.0.0/0
 
 ##### Docker Machine Setup
 

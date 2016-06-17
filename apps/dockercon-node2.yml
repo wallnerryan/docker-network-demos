@@ -15,6 +15,6 @@ services:
   redis:
     image: redis:latest
     environment:
-       - "constraint:node==node2"
+       - "constraint:node==mha-aws-demo2"
     volumes:
        - 'demo:/data'
