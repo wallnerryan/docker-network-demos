@@ -1,0 +1,13 @@
+version: '2'
+volumes:
+  redisresch:
+    driver: flocker
+services:
+  db_redis:
+    command: redis-server --appendonly yes
+    image: redis:latest
+    environment:
+       - "constraint:node!=mha-aws-demo1"
+       - "reschedule:on-node-failure"
+    volumes:
+       - 'redisresch:/data'

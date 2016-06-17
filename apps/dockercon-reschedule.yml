@@ -1,0 +1,25 @@
+version: '2'
+volumes:
+  demoresch:
+    driver: flocker
+services:
+  web:
+    image: clusterhq/moby-counter:dcsea
+    environment:
+       - "USE_REDIS_HOST=redis"
+       - "affinity:container==apps_redis_1"
+       - "reschedule:on-node-failure"
+    links:
+      - redis
+    ports:
+      - "80:80"
+    restart: always
+    depends_on:
+      - redis
+  redis:
+    image: redis:latest
+    environment:
+       - "constraint:node!=mha-aws-demo1"
+       - "reschedule:on-node-failure"
+    volumes:
+       - 'demoresch:/data'
